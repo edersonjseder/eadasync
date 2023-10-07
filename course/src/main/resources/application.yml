@@ -1,0 +1,40 @@
+server:
+  port: 8052
+  servlet:
+    context-path: /courses
+
+spring:
+  profiles:
+    active: dev
+  output:
+    ansi:
+      enabled: always
+  application:
+    name: ead-course
+
+logging:
+  level:
+    com.ead: TRACE
+    root: info
+    org.springframework.web: debug
+    org.hibernate: info
+
+feign:
+  client:
+    config:
+      default:
+        loggerLevel: BASIC
+        connectTimeout: 160000000
+        readTimeout: 160000000
+
+ead:
+  auth-user:
+    name: authuser
+    url: 'ead-authuser/auth_user'
+
+eureka:
+  client:
+    service-url:
+      defaultZone: 'http://localhost:8761/eureka'
+  instance:
+    hostname: localhost

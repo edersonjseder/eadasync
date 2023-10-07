@@ -1,0 +1,12 @@
+server:
+  port: 8761
+
+spring:
+  application:
+    name: ead-service-registry
+
+#This config won't be in production
+eureka:
+  client:
+    register-with-eureka: false #This line prevents eureka to auto register
+    fetch-registry: false #It won't fetch its own registration in eureka

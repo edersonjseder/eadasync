@@ -1,0 +1,40 @@
+server:
+  port: 8050
+
+spring:
+  application:
+    name: ead-api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: authuser-service
+          uri: lb://ead-authuser
+          predicates:
+            - Path=/auth_user/**
+
+        - id: course-service
+          uri: lb://ead-course
+          predicates:
+            - Path=/courses/**
+      # Configuration to enable this gateway to allow React/Angular servers to access it without block them
+      discovery:
+        locator:
+          enabled: true
+      default-filters: ##Added filters and cors so that react can access the api gateway without network errors
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+      global-cors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:3000" # react server
+              - "http://localhost:4200" # react server
+              - "http://localhost:5000" # angular server
+            allowedMethods: "*"
+            allowedHeaders: "*"
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: 'http://localhost:8761/eureka'
+  instance:
+    hostname: localhost
