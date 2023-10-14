@@ -2,11 +2,11 @@ package com.ead.course.exceptions;
 
 import java.util.UUID;
 
-public class CourseUserNotFoundException extends RuntimeException {
-    public CourseUserNotFoundException(String value) {
+public class UserNotFoundException extends RuntimeException {
+    public UserNotFoundException(String value) {
         super(value);
     }
-    public CourseUserNotFoundException(UUID value) {
+    public UserNotFoundException(UUID value) {
         super(generateMessage(value));
     }
     private static String generateMessage(UUID value) {

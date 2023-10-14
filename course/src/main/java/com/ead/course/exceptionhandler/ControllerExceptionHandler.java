@@ -80,14 +80,14 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(errorResponse);
     }
 
-    @ExceptionHandler(CourseUserException.class)
-    protected ResponseEntity<ErrorResponse> handleCourseUserException(CourseUserException ex) {
+    @ExceptionHandler(UserException.class)
+    protected ResponseEntity<ErrorResponse> handleCourseUserException(UserException ex) {
         ErrorResponse errorResponse = new ErrorResponse(CONFLICT, ex.getMessage());
         return buildResponseEntity(errorResponse);
     }
 
-    @ExceptionHandler(CourseUserNotFoundException.class)
-    protected ResponseEntity<ErrorResponse> handleCourseUserNotFoundException(CourseUserNotFoundException ex) {
+    @ExceptionHandler(UserNotFoundException.class)
+    protected ResponseEntity<ErrorResponse> handleCourseUserNotFoundException(UserNotFoundException ex) {
         ErrorResponse errorResponse = new ErrorResponse(NOT_FOUND, ex.getMessage());
         return buildResponseEntity(errorResponse);
     }

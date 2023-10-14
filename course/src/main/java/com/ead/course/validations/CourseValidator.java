@@ -1,6 +1,5 @@
 package com.ead.course.validations;
 
-import com.ead.course.clients.AuthUserClientFeign;
 import com.ead.course.dtos.CourseDto;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -13,13 +12,10 @@ import java.util.UUID;
 public class CourseValidator implements Validator {
     @Qualifier("defaultValidator")
     private final Validator validator;
-    private final AuthUserClientFeign authUserClientFeign;
 
-    public CourseValidator(@Qualifier("defaultValidator") Validator validator, AuthUserClientFeign authUserClientFeign) {
+    public CourseValidator(@Qualifier("defaultValidator") Validator validator) {
         this.validator = validator;
-        this.authUserClientFeign = authUserClientFeign;
     }
-
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -37,10 +33,10 @@ public class CourseValidator implements Validator {
     }
 
     private void validateUserInstructor(UUID userInstructor, Errors errors) {
-        var user = authUserClientFeign.getUserById(userInstructor);
-
-        if (user.getType().equals("STUDENT")) {
-            errors.rejectValue("userInstructor", "UserInstructorError", "Usuário deve ser INSTRUCTOR ou ADMIN.");
-        }
+//        var user = authUserClientFeign.getUserById(userInstructor);
+//
+//        if (user.getType().equals("STUDENT")) {
+//            errors.rejectValue("userInstructor", "UserInstructorError", "Usuário deve ser INSTRUCTOR ou ADMIN.");
+//        }
     }
 }

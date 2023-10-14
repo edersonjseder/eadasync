@@ -1,11 +1,9 @@
 package com.ead.course.controllers;
 
 import com.ead.course.dtos.SubscriptionDto;
-import com.ead.course.dtos.UserDto;
-import com.ead.course.services.CourseUserService;
+import com.ead.course.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -19,23 +17,18 @@ import static org.springframework.http.HttpStatus.CREATED;
 @RestController
 @RequiredArgsConstructor
 public class CourseUserController {
-    private final CourseUserService courseUserService;
+    private final UserService userService;
 
     @GetMapping("/{id}/users")
-    public ResponseEntity<Page<UserDto>> getAllUsersByCourse(@PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
+    public ResponseEntity<String> getAllUsersByCourse(@PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
                                                              @PathVariable(value = "id") UUID id) {
-        return ResponseEntity.ok(courseUserService.getUsersByCourse(id, pageable));
+        return ResponseEntity.ok("");
     }
 
     @PostMapping("/{id}/users/subscribe")
     public ResponseEntity<SubscriptionDto> subscribeUserInCourse(@PathVariable(value = "id") UUID id,
                                                          @RequestBody @Valid SubscriptionDto subscriptionDto) {
-        return ResponseEntity.status(CREATED).body(courseUserService.saveAndSendSubscriptionUserInCourse(id, subscriptionDto));
-    }
-
-    @DeleteMapping("/courses/users/{userId}")
-    public ResponseEntity<String> deleteCourseUserByUser(@PathVariable(value = "userId") UUID userId) {
-        courseUserService.removeCourseUserByUser(userId);
-        return ResponseEntity.ok("CourseUser deleted successfully");
+        // Verificacoes state transfer
+        return ResponseEntity.status(CREATED).body(SubscriptionDto.builder().build());
     }
 }

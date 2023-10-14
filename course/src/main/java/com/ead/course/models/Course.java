@@ -57,10 +57,6 @@ public class Course implements Serializable {
     @Fetch(FetchMode.SUBSELECT)
     private Set<Module> modules;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
-    private Set<CourseUser> courseUsers;
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

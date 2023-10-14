@@ -1,18 +1,10 @@
 package com.ead.course.utils;
 
 import com.ead.course.dtos.CourseDto;
-import com.ead.course.dtos.SubscriptionDto;
 import com.ead.course.models.Course;
-import com.ead.course.models.CourseUser;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
