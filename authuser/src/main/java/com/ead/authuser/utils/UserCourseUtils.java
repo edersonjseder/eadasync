@@ -2,7 +2,6 @@ package com.ead.authuser.utils;
 
 import com.ead.authuser.dtos.UserCourseDto;
 import com.ead.authuser.models.User;
-import com.ead.authuser.models.UserCourse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

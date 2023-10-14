@@ -8,7 +8,6 @@ import com.ead.authuser.enums.UserType;
 import com.ead.authuser.exceptions.UserException;
 import com.ead.authuser.exceptions.UserNotFoundException;
 import com.ead.authuser.models.User;
-import com.ead.authuser.repositories.UserCourseRepository;
 import com.ead.authuser.repositories.UserRepository;
 import com.ead.authuser.responses.ImageResponse;
 import com.ead.authuser.responses.PasswordResponse;
@@ -34,7 +33,6 @@ import static com.ead.authuser.constants.UserMessagesConstants.*;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final UserCourseRepository userCourseRepository;
     private final UserUtils userUtils;
     private final CourseClient courseClient;
 
@@ -124,16 +122,7 @@ public class UserService {
 
     @Transactional
     public void deleteUser(UUID id) {
-        boolean deleteUserCourseInCourse = false;
         var user = findUserById(id);
-        var userCourseLst = userCourseRepository.findAllUserCourseIntoUser(id);
-        if (!userCourseLst.isEmpty()) {
-            userCourseRepository.deleteAll(userCourseLst);
-            deleteUserCourseInCourse = true;
-        }
         userRepository.delete(user);
-        if (deleteUserCourseInCourse) {
-            courseClient.deleteUserInCourse(user.getId());
-        }
     }
 }

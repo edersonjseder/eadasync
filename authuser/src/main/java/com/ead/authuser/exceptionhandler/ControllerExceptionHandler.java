@@ -1,8 +1,6 @@
 package com.ead.authuser.exceptionhandler;
 
 
-import com.ead.authuser.exceptions.UserCourseException;
-import com.ead.authuser.exceptions.UserCourseNotFoundException;
 import com.ead.authuser.exceptions.UserException;
 import com.ead.authuser.exceptions.UserNotFoundException;
 import com.ead.authuser.responses.ErrorResponse;
@@ -80,18 +78,6 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(UserException.class)
     protected ResponseEntity<ErrorResponse> handleUserException(UserException ex) {
         ErrorResponse errorResponse = new ErrorResponse(BAD_REQUEST, ex.getMessage());
-        return buildResponseEntity(errorResponse);
-    }
-
-    @ExceptionHandler(UserCourseException.class)
-    protected ResponseEntity<ErrorResponse> handleUserCourseException(UserCourseException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(CONFLICT, ex.getMessage());
-        return buildResponseEntity(errorResponse);
-    }
-
-    @ExceptionHandler(UserCourseNotFoundException.class)
-    protected ResponseEntity<ErrorResponse> handleUserCourseNotFoundException(UserCourseNotFoundException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(NOT_FOUND, ex.getMessage());
         return buildResponseEntity(errorResponse);
     }
 
