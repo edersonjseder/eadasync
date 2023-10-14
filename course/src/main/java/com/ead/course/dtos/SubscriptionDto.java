@@ -14,6 +14,5 @@ public class SubscriptionDto {
     private UUID userCourseId;
     @NotNull(message = "ID value is required")
     private UUID userId;
-    private UserDto user;
     private CourseDto course;
 }
