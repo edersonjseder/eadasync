@@ -7,6 +7,7 @@ public class UserMessagesConstants {
     public static final String USUARIO_USERNAME_INVALIDO_MENSAGEM = "Username inserido é inválido"; // UsernameConstraint annotation
     public static final String USUARIO_EMAIL_EXISTENTE_MENSAGEM = "Já existe usuário cadastrado com o e-mail ";
     public static final String USUARIO_EXISTENTE_MENSAGEM = "Esse usuário já está cadastrado";
+    public static final String USUARIO_BLOQUEADO_MENSAGEM = "Esse usuário está bloqueado";
     public static final String USUARIO_SENHA_MENSAGEM = "As senhas não são compatíveis";
     public static final String USUARIO_SENHA_SUCESSO_MENSAGEM = "Senha alterada com sucesso.";
     public static final String USUARIO_IMAGE_SUCESSO_MENSAGEM = "Imagem alterada com sucesso.";

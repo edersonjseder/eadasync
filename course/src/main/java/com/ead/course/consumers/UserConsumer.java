@@ -2,6 +2,7 @@ package com.ead.course.consumers;
 
 import com.ead.course.dtos.UserEventDto;
 import com.ead.course.enums.ActionType;
+import com.ead.course.exceptions.UserException;
 import com.ead.course.services.UserService;
 import com.ead.course.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,8 @@ import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
+
+import static com.ead.course.constants.ConsumerMessagesConstants.CONSUMER_MENSAGEM;
 
 @Component
 @RequiredArgsConstructor
@@ -25,6 +28,10 @@ public class UserConsumer {
     )
     public void listenUserEvent(@Payload UserEventDto userEventDto) {
         var user = userUtils.toUser(userEventDto);
-        userService.saveUser(user, userEventDto.getActionType());
+        switch (ActionType.valueOf(userEventDto.getActionType())) {
+            case CREATE, UPDATE -> userService.saveUpdateUser(user);
+            case DELETE -> userService.removeUser(userEventDto.getId());
+            default -> throw new UserException(CONSUMER_MENSAGEM);
+        }
     }
 }

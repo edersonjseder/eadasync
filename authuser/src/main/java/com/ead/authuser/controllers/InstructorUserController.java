@@ -2,6 +2,7 @@ package com.ead.authuser.controllers;
 
 import com.ead.authuser.dtos.InstructorDto;
 import com.ead.authuser.dtos.UserDto;
+import com.ead.authuser.enums.ActionType;
 import com.ead.authuser.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,6 @@ public class InstructorUserController {
 
     @PostMapping(value = "/subscribe")
     public ResponseEntity<UserDto> subscribeInstructor(@RequestBody @Valid InstructorDto instructorDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.subscribeInstructor(instructorDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.subscribeInstructor(instructorDto, ActionType.UPDATE));
     }
 }

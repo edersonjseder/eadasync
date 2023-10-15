@@ -25,10 +25,10 @@ public class UserDto extends RepresentationModel<UserDto> {
 
     private UUID id;
 
-    @NotBlank(groups = UserView.RegistrationPost.class, message = "Username is required")
-    @Size(min = 4, max = 50, groups = UserView.RegistrationPost.class)
-    @UsernameConstraint(groups = UserView.RegistrationPost.class)
-    @JsonView(UserView.RegistrationPost.class)
+    @NotBlank(groups = {UserView.RegistrationPost.class, UserView.UserPut.class}, message = "Username is required")
+    @Size(min = 4, max = 50, groups = {UserView.RegistrationPost.class, UserView.UserPut.class})
+    @UsernameConstraint(groups = {UserView.RegistrationPost.class, UserView.UserPut.class})
+    @JsonView({UserView.RegistrationPost.class, UserView.UserPut.class})
     private String username;
 
     @NotBlank(groups = {UserView.RegistrationPost.class, UserView.PasswordPut.class}, message = "Password is required")
@@ -41,9 +41,9 @@ public class UserDto extends RepresentationModel<UserDto> {
     @JsonView(UserView.PasswordPut.class)
     private String oldPassword;
 
-    @NotBlank(groups = UserView.RegistrationPost.class, message = "E-mail is required")
-    @Email(groups = UserView.RegistrationPost.class, message = "Insert valid e-mail")
-    @JsonView(UserView.RegistrationPost.class)
+    @NotBlank(groups = {UserView.RegistrationPost.class, UserView.UserPut.class}, message = "E-mail is required")
+    @Email(groups = {UserView.RegistrationPost.class, UserView.UserPut.class}, message = "Insert valid e-mail")
+    @JsonView({UserView.RegistrationPost.class, UserView.UserPut.class})
     private String email;
 
     @NotBlank(groups = {UserView.RegistrationPost.class, UserView.UserPut.class}, message = "Full name is required")

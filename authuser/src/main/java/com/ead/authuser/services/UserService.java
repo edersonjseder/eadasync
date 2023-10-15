@@ -47,15 +47,19 @@ public class UserService {
     }
 
     @Transactional
-    public UserDto subscribeInstructor(InstructorDto instructorDto) {
+    public UserDto subscribeInstructor(InstructorDto instructorDto, ActionType type) {
         var user = userRepository.findUserByEmail(instructorDto.getEmail()).orElseThrow(() -> new UserNotFoundException(instructorDto.getEmail()));
+        if (user.getUserStatus().equals(UserStatus.BLOCKED)) {
+            throw new UserException(USUARIO_BLOQUEADO_MENSAGEM);
+        }
         user.setUserType(UserType.INSTRUCTOR);
         user.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
+        userEventPublisher.publishUserEvent(userUtils.toUserEventDto(user), type);
         return userUtils.toUserDto(user);
     }
 
     @Transactional
-    public UserDto saveUser(UserDto userDto) {
+    public UserDto saveUser(UserDto userDto, ActionType type) {
         User user;
 
         if (userDto.getId() == null) {
@@ -85,6 +89,8 @@ public class UserService {
         } else {
             user = userRepository.findById(userDto.getId()).orElseThrow(() -> new UserNotFoundException(userDto.getId()));
 
+            user.setUsername(userDto.getUsername());
+            user.setEmail(userDto.getEmail());
             user.setFullName(userDto.getFullName());
             user.setPhoneNumber(userDto.getPhoneNumber());
             user.setUserStatus(UserStatus.valueOf(userDto.getStatus()));
@@ -95,7 +101,7 @@ public class UserService {
 
         var userRegistered = userRepository.save(user);
 
-        userEventPublisher.publishUserEvent(userUtils.toUserEventDto(userRegistered), ActionType.CREATE);
+        userEventPublisher.publishUserEvent(userUtils.toUserEventDto(userRegistered), type);
 
         return userUtils.toUserDto(userRegistered);
     }
@@ -116,11 +122,12 @@ public class UserService {
     }
 
     @Transactional
-    public ImageResponse updateImage(UserDto userDto) {
+    public ImageResponse updateImage(UserDto userDto, ActionType type) {
         var user = userRepository.findById(userDto.getId()).orElseThrow(() -> new UserNotFoundException(userDto.getId()));
 
         user.setImageUrl(userDto.getImageUrl());
         user.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
+        userEventPublisher.publishUserEvent(userUtils.toUserEventDto(user), type);
 
         return userUtils.toImageResponse(user);
     }
@@ -129,5 +136,6 @@ public class UserService {
     public void deleteUser(UUID id) {
         var user = findUserById(id);
         userRepository.delete(user);
+        userEventPublisher.publishUserEvent(userUtils.toUserEventDto(user), ActionType.DELETE);
     }
 }

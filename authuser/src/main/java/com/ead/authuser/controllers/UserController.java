@@ -1,6 +1,7 @@
 package com.ead.authuser.controllers;
 
 import com.ead.authuser.dtos.UserDto;
+import com.ead.authuser.enums.ActionType;
 import com.ead.authuser.responses.ImageResponse;
 import com.ead.authuser.responses.PasswordResponse;
 import com.ead.authuser.services.UserService;
@@ -57,7 +58,7 @@ public class UserController {
 
     @PutMapping(value = "/update")
     public ResponseEntity<UserDto> updateUser(@RequestBody @Validated(UserDto.UserView.UserPut.class) @JsonView(UserDto.UserView.UserPut.class) UserDto userDto) {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.saveUser(userDto));
+        return ResponseEntity.status(HttpStatus.OK).body(userService.saveUser(userDto, ActionType.UPDATE));
     }
 
     @PutMapping(value = "/password")
@@ -67,6 +68,6 @@ public class UserController {
 
     @PutMapping(value = "/image")
     public ResponseEntity<ImageResponse> updateImage(@RequestBody @Validated(UserDto.UserView.ImagePut.class) @JsonView(UserDto.UserView.ImagePut.class) UserDto userDto) {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.updateImage(userDto));
+        return ResponseEntity.status(HttpStatus.OK).body(userService.updateImage(userDto, ActionType.UPDATE));
     }
 }
