@@ -25,6 +25,9 @@ logging:
 ead:
   course:
     url: 'http://ead-course/courses'
+  broker:
+    exchange:
+      userEvent: ead.userevent
 
 eureka:
   client:

@@ -1,13 +1,14 @@
 package com.ead.authuser.services;
 
-import com.ead.authuser.clients.CourseClient;
 import com.ead.authuser.dtos.InstructorDto;
 import com.ead.authuser.dtos.UserDto;
+import com.ead.authuser.enums.ActionType;
 import com.ead.authuser.enums.UserStatus;
 import com.ead.authuser.enums.UserType;
 import com.ead.authuser.exceptions.UserException;
 import com.ead.authuser.exceptions.UserNotFoundException;
 import com.ead.authuser.models.User;
+import com.ead.authuser.publishers.UserEventPublisher;
 import com.ead.authuser.repositories.UserRepository;
 import com.ead.authuser.responses.ImageResponse;
 import com.ead.authuser.responses.PasswordResponse;
@@ -34,7 +35,7 @@ import static com.ead.authuser.constants.UserMessagesConstants.*;
 public class UserService {
     private final UserRepository userRepository;
     private final UserUtils userUtils;
-    private final CourseClient courseClient;
+    private final UserEventPublisher userEventPublisher;
 
     public Page<UserDto> findAllUsers(Specification<User> spec, Pageable pageable) {
         return userUtils.toListUserDto(userRepository.findAll(spec, pageable));
@@ -92,7 +93,11 @@ public class UserService {
 
         user.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
 
-        return userUtils.toUserDto(userRepository.save(user));
+        var userRegistered = userRepository.save(user);
+
+        userEventPublisher.publishUserEvent(userUtils.toUserEventDto(userRegistered), ActionType.CREATE);
+
+        return userUtils.toUserDto(userRegistered);
     }
 
     @Transactional

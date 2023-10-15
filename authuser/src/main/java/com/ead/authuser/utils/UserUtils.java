@@ -1,11 +1,13 @@
 package com.ead.authuser.utils;
 
 import com.ead.authuser.dtos.UserDto;
+import com.ead.authuser.dtos.UserEventDto;
 import com.ead.authuser.models.User;
 import com.ead.authuser.responses.ImageResponse;
 import com.ead.authuser.responses.PasswordResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -75,12 +77,16 @@ public class UserUtils {
                 .build());
     }
 
+    public UserEventDto toUserEventDto(User user) {
+        var userEventDto = new UserEventDto();
+        BeanUtils.copyProperties(user, userEventDto);
+        userEventDto.setUserStatus(user.getUserStatus().name());
+        userEventDto.setUserType(user.getUserType().name());
+        return userEventDto;
+    }
+
     public String createUrlConnectionGetAllToCourse(UUID userId, Pageable pageable) {
         return requestUrl + "/all?userId=" + userId + "&page=" + pageable.getPageNumber() + "&size=" +
                 pageable.getPageSize() + "&sort=" + pageable.getSort().toString().replaceAll(": ", ",");
-    }
-
-    public String createUrlConnectionDeleteToCourse(UUID userId) {
-        return requestUrl + "/courses/users/" + userId;
     }
 }
