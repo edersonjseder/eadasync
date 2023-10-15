@@ -33,6 +33,12 @@ ead:
   auth-user:
     name: authuser
     url: 'ead-authuser/auth_user'
+  broker:
+    exchange:
+      userEventExchange: ead.userevent
+    queue:
+      userEventQueue:
+        name: ead.userevent.ms.course
 
 eureka:
   client:
