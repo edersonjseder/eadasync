@@ -11,6 +11,8 @@ spring:
       enabled: always
   application:
     name: ead-course
+  rabbitmq:
+    addresses: amqps://ftnvmbsd:xgD3-_1PipNCZo3negu-BmaA9BdAEfjI@shrimp.rmq.cloudamqp.com/ftnvmbsd
 
 logging:
   level:

@@ -21,7 +21,7 @@ import javax.sql.DataSource;
 @EnableJpaRepositories(basePackages = {"com.ead.course.repositories"})
 @EnableAutoConfiguration(exclude = { JpaRepositoriesAutoConfiguration.class, DataSourceTransactionManagerAutoConfiguration.class})
 @Profile("dev")
-@PropertySource(value = "file:///${user.home}/ead/course/application-dev.properties", ignoreResourceNotFound = true)
+@PropertySource(value = "file:///${user.home}/ead/course/application_v2-dev.properties", ignoreResourceNotFound = true)
 public class DevConfig {
     @Value("${spring.jpa.datasource.class-name}")
     private String driverClassName;

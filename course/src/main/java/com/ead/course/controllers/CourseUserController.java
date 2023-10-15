@@ -1,9 +1,13 @@
 package com.ead.course.controllers;
 
 import com.ead.course.dtos.SubscriptionDto;
+import com.ead.course.dtos.UserDto;
 import com.ead.course.services.UserService;
+import com.ead.course.specifications.SpecificationTemplate;
+import com.ead.course.specifications.UserSpec;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -20,9 +24,10 @@ public class CourseUserController {
     private final UserService userService;
 
     @GetMapping("/{id}/users")
-    public ResponseEntity<String> getAllUsersByCourse(@PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
+    public ResponseEntity<Page<UserDto>> getAllUsersByCourse(UserSpec spec,
+                                                             @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
                                                              @PathVariable(value = "id") UUID id) {
-        return ResponseEntity.ok("");
+        return ResponseEntity.ok(userService.findAllUsers(SpecificationTemplate.userCourseId(id).and(spec), pageable));
     }
 
     @PostMapping("/{id}/users/subscribe")

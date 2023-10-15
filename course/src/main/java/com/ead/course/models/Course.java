@@ -57,6 +57,13 @@ public class Course implements Serializable {
     @Fetch(FetchMode.SUBSELECT)
     private Set<Module> modules;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "TB_COURSES_USERS",
+        joinColumns = @JoinColumn(name = "course_id"),
+        inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<User> users;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -31,4 +31,22 @@ public class SpecificationTemplate {
             return cb.and(cb.equal(module.get("id"), id), cb.isMember(root, moduleLessons));
         });
     }
+
+    public static Specification<User> userCourseId(final UUID courseId) {
+        return ((root, query, criteriaBuilder) -> {
+            query.distinct(true);
+            Root<Course> course = query.from(Course.class);
+            Expression<Collection<User>> coursesUsers = course.get("users");
+            return criteriaBuilder.and(criteriaBuilder.equal(course.get("id"), courseId), criteriaBuilder.isMember(root, coursesUsers));
+        });
+    }
+
+    public static Specification<Course> courseUserId(final UUID userId) {
+        return ((root, query, criteriaBuilder) -> {
+            query.distinct(true);
+            Root<User> user = query.from(User.class);
+            Expression<Collection<Course>> userCourses = user.get("courses");
+            return criteriaBuilder.and(criteriaBuilder.equal(user.get("id"), userId), criteriaBuilder.isMember(root, userCourses));
+        });
+    }
 }
