@@ -8,12 +8,8 @@ import com.ead.authuser.responses.PasswordResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-
-import java.util.UUID;
 
 import static com.ead.authuser.constants.UserMessagesConstants.USUARIO_IMAGE_SUCESSO_MENSAGEM;
 import static com.ead.authuser.constants.UserMessagesConstants.USUARIO_SENHA_SUCESSO_MENSAGEM;
@@ -22,9 +18,6 @@ import static com.ead.authuser.constants.UserMessagesConstants.USUARIO_SENHA_SUC
 @Component
 @RequiredArgsConstructor
 public class UserUtils {
-    @Value("${ead.course.url}")
-    private String requestUrl;
-
     private final DateUtils dateUtils;
     public UserDto toUserDto(User user) {
         log.debug("Method toUserDto user saved {} ", user.toString());
@@ -83,10 +76,5 @@ public class UserUtils {
         userEventDto.setUserStatus(user.getUserStatus().name());
         userEventDto.setUserType(user.getUserType().name());
         return userEventDto;
-    }
-
-    public String createUrlConnectionGetAllToCourse(UUID userId, Pageable pageable) {
-        return requestUrl + "/all?userId=" + userId + "&page=" + pageable.getPageNumber() + "&size=" +
-                pageable.getPageSize() + "&sort=" + pageable.getSort().toString().replaceAll(": ", ",");
     }
 }

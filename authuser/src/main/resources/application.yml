@@ -13,6 +13,16 @@ spring:
     name: ead-authuser
   rabbitmq:
     addresses: amqps://ftnvmbsd:xgD3-_1PipNCZo3negu-BmaA9BdAEfjI@shrimp.rmq.cloudamqp.com/ftnvmbsd
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            connect-timeout: 5000
+            read-timeout: 5000
+            logger-level: basic
+      circuitbreaker:
+        enabled: true
 
 logging:
   level:
@@ -35,3 +45,38 @@ eureka:
       defaultZone: 'http://localhost:8761/eureka'
   instance:
     hostname: localhost
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      circuit-get-all-courses-by-user:
+        register-health-indicator: true
+        sliding-window-size: 30
+        permitted-number-of-calls-in-half-open-state: 2
+        sliding-window-type: TIME_BASED
+        minimum-number-of-calls: 2
+        wait-duration-in-open-state: 30s
+        failure-rate-threshold: 80
+  retry:
+    configs:
+      default:
+        max-attempts: 3
+        wait-duration: 5s
+    instances:
+      retry-get-all-courses-by-user:
+        base-config: default
+
+management:
+  server:
+    port: 8049
+  endpoints:
+    web:
+      exposure:
+        include: 'health,info'
+  endpoint:
+    info:
+      enabled: true
+    health:
+      enabled: true
+    loggers:
+      enabled: true

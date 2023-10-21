@@ -1,10 +1,14 @@
 package com.ead.authuser.exceptionhandler;
 
 
+import com.ead.authuser.exceptions.CourseServiceNotAvailableException;
 import com.ead.authuser.exceptions.UserException;
 import com.ead.authuser.exceptions.UserNotFoundException;
 import com.ead.authuser.responses.ErrorResponse;
+import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.cloud.client.circuitbreaker.NoFallbackAvailableException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
@@ -68,6 +72,24 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
 //        ErrorResponse errorResponse = new ErrorResponse(UNAUTHORIZED, "Usuario ou senha invalidos", e.getMessage());
 //        return buildResponseEntity(errorResponse);
 //    }
+
+    @ExceptionHandler(CourseServiceNotAvailableException.class)
+    public ResponseEntity<ErrorResponse> handleCourseServiceNotAvailableException(CourseServiceNotAvailableException e) {
+        ErrorResponse errorResponse = new ErrorResponse(SERVICE_UNAVAILABLE, e.getMessage());
+        return buildResponseEntity(errorResponse);
+    }
+
+    @ExceptionHandler(NoFallbackAvailableException.class)
+    public ResponseEntity<ErrorResponse> handleNoFallbackAvailableException(NoFallbackAvailableException e) {
+        ErrorResponse errorResponse = new ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage());
+        return buildResponseEntity(errorResponse);
+    }
+
+    @ExceptionHandler(CallNotPermittedException.class)
+    public ResponseEntity<ErrorResponse> handleNCallNotPermittedException(CallNotPermittedException e) {
+        ErrorResponse errorResponse = new ErrorResponse(SERVICE_UNAVAILABLE, e.getMessage());
+        return buildResponseEntity(errorResponse);
+    }
 
     @ExceptionHandler(UserNotFoundException.class)
     protected ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException ex) {

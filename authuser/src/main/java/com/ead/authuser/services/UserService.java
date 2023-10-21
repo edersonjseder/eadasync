@@ -1,10 +1,14 @@
 package com.ead.authuser.services;
 
+import com.ead.authuser.clients.CourseClientFeign;
+import com.ead.authuser.clients.params.CourseClientParams;
+import com.ead.authuser.dtos.CourseDto;
 import com.ead.authuser.dtos.InstructorDto;
 import com.ead.authuser.dtos.UserDto;
 import com.ead.authuser.enums.ActionType;
 import com.ead.authuser.enums.UserStatus;
 import com.ead.authuser.enums.UserType;
+import com.ead.authuser.exceptions.CourseServiceNotAvailableException;
 import com.ead.authuser.exceptions.UserException;
 import com.ead.authuser.exceptions.UserNotFoundException;
 import com.ead.authuser.models.User;
@@ -36,6 +40,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserUtils userUtils;
     private final UserEventPublisher userEventPublisher;
+    private final CourseClientFeign courseClientFeign;
 
     public Page<UserDto> findAllUsers(Specification<User> spec, Pageable pageable) {
         return userUtils.toListUserDto(userRepository.findAll(spec, pageable));
@@ -44,6 +49,15 @@ public class UserService {
     public User findUserById(UUID id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
+    }
+
+    public Page<CourseDto> getCoursesByUser(UUID userId, Pageable pageable) {
+        return courseClientFeign.getAllCoursesByUser(CourseClientParams.builder()
+                .userId(userId)
+                .page(pageable.getPageNumber())
+                .size(pageable.getPageSize())
+                .sort(pageable.getSort().toString().replaceAll(": ", ","))
+                .build());
     }
 
     @Transactional

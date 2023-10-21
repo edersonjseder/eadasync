@@ -12,4 +12,7 @@ public class UserMessagesConstants {
     public static final String USUARIO_SENHA_SUCESSO_MENSAGEM = "Senha alterada com sucesso.";
     public static final String USUARIO_IMAGE_SUCESSO_MENSAGEM = "Imagem alterada com sucesso.";
     public static final String USUARIO_REMOVIDO_SUCESSO_MENSAGEM = "Usuário removido com sucesso.";
+    public static final String COURSE_SERVICE_MENSAGEM = "Serviço está indisponível";
+    public static final String COURSE_FEIGN_SERVICE_MENSAGEM = "Serviço está indisponível para consultar o valor: ";
+    public static final String COURSE_NOT_FOUND_MENSAGEM = "Curso não encontrado.";
 }
