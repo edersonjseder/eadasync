@@ -94,6 +94,7 @@ public class UserService {
             user.setFullName(userDto.getFullName());
             user.setPhoneNumber(userDto.getPhoneNumber());
             user.setUserStatus(UserStatus.valueOf(userDto.getStatus()));
+            user.setUserType(UserType.valueOf(userDto.getType()));
             log.debug("Method saveUser user updated {} ", user.toString());
         }
 

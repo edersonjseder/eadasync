@@ -2,6 +2,7 @@ package com.ead.course.controllers;
 
 import com.ead.course.dtos.SubscriptionDto;
 import com.ead.course.dtos.UserDto;
+import com.ead.course.services.CourseService;
 import com.ead.course.services.UserService;
 import com.ead.course.specifications.SpecificationTemplate;
 import com.ead.course.specifications.UserSpec;
@@ -22,6 +23,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 @RequiredArgsConstructor
 public class CourseUserController {
     private final UserService userService;
+    private final CourseService courseService;
 
     @GetMapping("/{id}/users")
     public ResponseEntity<Page<UserDto>> getAllUsersByCourse(UserSpec spec,
@@ -31,9 +33,8 @@ public class CourseUserController {
     }
 
     @PostMapping("/{id}/users/subscribe")
-    public ResponseEntity<SubscriptionDto> subscribeUserInCourse(@PathVariable(value = "id") UUID id,
+    public ResponseEntity<String> subscribeUserInCourse(@PathVariable(value = "id") UUID id,
                                                          @RequestBody @Valid SubscriptionDto subscriptionDto) {
-        // Verificacoes state transfer
-        return ResponseEntity.status(CREATED).body(SubscriptionDto.builder().build());
+        return ResponseEntity.status(CREATED).body(courseService.saveSubscriptionUserInCourse(id, subscriptionDto));
     }
 }
