@@ -37,6 +37,10 @@ logging:
     org.springframework.web: debug
     org.hibernate: info
 
+course:
+  refreshscope:
+    name: Ederson de Jesus Santos!!!!!
+
 ead:
   auth-user:
     name: authuser
@@ -47,3 +51,22 @@ ead:
     queue:
       userEventQueue:
         name: ead.userevent.ms.course
+
+#Actuator
+management:
+  server:
+    port: 9050
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - info
+          - refresh
+  endpoint:
+    info:
+      enabled: true
+    health:
+      enabled: true
+    loggers:
+      enabled: true
