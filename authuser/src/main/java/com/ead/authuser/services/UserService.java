@@ -8,7 +8,6 @@ import com.ead.authuser.dtos.UserDto;
 import com.ead.authuser.enums.ActionType;
 import com.ead.authuser.enums.UserStatus;
 import com.ead.authuser.enums.UserType;
-import com.ead.authuser.exceptions.CourseServiceNotAvailableException;
 import com.ead.authuser.exceptions.UserException;
 import com.ead.authuser.exceptions.UserNotFoundException;
 import com.ead.authuser.models.User;
@@ -19,7 +18,7 @@ import com.ead.authuser.responses.PasswordResponse;
 import com.ead.authuser.utils.UserUtils;
 import com.ead.authuser.utils.ValidaCPF;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,7 +32,7 @@ import java.util.UUID;
 
 import static com.ead.authuser.constants.UserMessagesConstants.*;
 
-@Log4j2
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {

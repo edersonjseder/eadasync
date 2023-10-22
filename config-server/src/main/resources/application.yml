@@ -1,0 +1,25 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: ead-config-server
+  profiles:
+    active: dev
+  cloud:
+    config:
+      server:
+        #native:
+          #search-locations: file:///${user.home}/ead/authuser,  file:///${user.home}/ead/course
+        git:
+          uri: 'https://github.com/edersonjseder/ead-config-server-repo'
+          default-label: main
+          username: edersonjseder
+          password: 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
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: 'http://localhost:8761/eureka'
+  instance:
+    hostname: localhost
