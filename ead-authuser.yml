@@ -83,11 +83,11 @@ resilience4j:
         base-config: default
 #Actuator
 management:
-  context-path: /auth_user
   server:
     port: 8049
   endpoints:
     web:
+      basepath: /auth_user
       exposure:
         include:
           - health
