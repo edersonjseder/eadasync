@@ -87,7 +87,7 @@ management:
     port: 8049
   endpoints:
     web:
-      basepath: /auth_user
+      base-path: /auth_user
       exposure:
         include:
           - health
