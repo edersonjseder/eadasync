@@ -1,0 +1,49 @@
+server:
+  port: 8052
+  servlet:
+    context-path: /courses
+
+spring:
+  profiles:
+    active: dev
+  output:
+    ansi:
+      enabled: always
+  application:
+    name: ead-course
+  rabbitmq:
+    addresses: amqps://ftnvmbsd:xgD3-_1PipNCZo3negu-BmaA9BdAEfjI@shrimp.rmq.cloudamqp.com/ftnvmbsd
+  #Datasource
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/ead-course?currentSchema=sc_course_state_transfer&autoreconnect=true"
+    username: edersonjseder
+    password: Postgres1756
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      jdbc:
+        lob:
+          non-contextual-creation: true
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+
+logging:
+  level:
+    com.ead: TRACE
+    root: info
+    org.springframework.web: debug
+    org.hibernate: info
+
+ead:
+  auth-user:
+    name: authuser
+    url: "ead-authuser/auth_user"
+  broker:
+    exchange:
+      userEventExchange: ead.userevent
+    queue:
+      userEventQueue:
+        name: ead.userevent.ms.course
