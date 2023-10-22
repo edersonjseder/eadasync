@@ -11,9 +11,11 @@ spring:
       enabled: always
   application:
     name: ead-authuser
+  #RabbitMQ
   rabbitmq:
     addresses: amqps://ftnvmbsd:xgD3-_1PipNCZo3negu-BmaA9BdAEfjI@shrimp.rmq.cloudamqp.com/ftnvmbsd
   cloud:
+    #Openfeign
     openfeign:
       client:
         config:
@@ -23,6 +25,22 @@ spring:
             logger-level: basic
       circuitbreaker:
         enabled: true
+  #Datasource
+  datasource:
+    url: "jdbc:mysql://localhost:3308/ead-async-authuser?createDatabaseIfNotExist=true&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC"
+    username: root
+    password: P@ssword1756
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+      jdbc:
+        lob:
+          non-contextual-creation: true
+    database-platform: org.hibernate.dialect.MySQLDialect
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 
 logging:
   level:
@@ -34,11 +52,12 @@ logging:
 #RestTemplate URI connection between microservices
 ead:
   course:
-    url: 'http://ead-course/courses'
+    url: "http://ead-course/courses"
   broker:
     exchange:
       userEvent: ead.userevent
 
+#Circuitbreaker
 resilience4j:
   circuitbreaker:
     instances:
@@ -58,14 +77,14 @@ resilience4j:
     instances:
       retry-get-all-courses-by-user:
         base-config: default
-
+#Actuator
 management:
   server:
     port: 8049
   endpoints:
     web:
       exposure:
-        include: 'health,info'
+        include: "health,info"
   endpoint:
     info:
       enabled: true
