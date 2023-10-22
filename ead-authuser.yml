@@ -59,7 +59,7 @@ ead:
 
 authuser:
   refreshscope:
-    name: Ederson de Jesus Santos
+    name: Ederson de Jesus Santos!!
 
 #Circuitbreaker
 resilience4j:
@@ -84,10 +84,9 @@ resilience4j:
 #Actuator
 management:
   server:
-    port: 8049
+    port: 9049
   endpoints:
     web:
-      base-path: /auth_user
       exposure:
         include:
           - health
