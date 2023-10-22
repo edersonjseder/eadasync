@@ -57,6 +57,10 @@ ead:
     exchange:
       userEvent: ead.userevent
 
+authuser:
+  refreshscope:
+    name: Ederson Santos
+
 #Circuitbreaker
 resilience4j:
   circuitbreaker:
@@ -84,7 +88,10 @@ management:
   endpoints:
     web:
       exposure:
-        include: "health,info"
+        include:
+          - health
+          - info
+          - refresh
   endpoint:
     info:
       enabled: true
