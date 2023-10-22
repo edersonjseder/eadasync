@@ -15,7 +15,7 @@ spring:
           uri: 'https://github.com/edersonjseder/ead-config-server-repo'
           default-label: main
           username: edersonjseder
-          password: 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
+          password: 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
 
 eureka:
   client:
