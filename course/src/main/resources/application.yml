@@ -1,48 +1,9 @@
-server:
-  port: 8052
-  servlet:
-    context-path: /courses
-
 spring:
-  profiles:
-    active: dev
-  output:
-    ansi:
-      enabled: always
   application:
     name: ead-course
-  rabbitmq:
-    addresses: amqps://ftnvmbsd:xgD3-_1PipNCZo3negu-BmaA9BdAEfjI@shrimp.rmq.cloudamqp.com/ftnvmbsd
-
-logging:
-  level:
-    com.ead: TRACE
-    root: info
-    org.springframework.web: debug
-    org.hibernate: info
-
-feign:
-  client:
+  config:
+    import: 'configserver:'
+  cloud:
     config:
-      default:
-        loggerLevel: BASIC
-        connectTimeout: 160000000
-        readTimeout: 160000000
-
-ead:
-  auth-user:
-    name: authuser
-    url: 'ead-authuser/auth_user'
-  broker:
-    exchange:
-      userEventExchange: ead.userevent
-    queue:
-      userEventQueue:
-        name: ead.userevent.ms.course
-
-eureka:
-  client:
-    service-url:
-      defaultZone: 'http://localhost:8761/eureka'
-  instance:
-    hostname: localhost
+      discovery:
+        service-id: ead-config-server
