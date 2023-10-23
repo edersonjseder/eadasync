@@ -1,0 +1,55 @@
+server:
+  port: 8053
+  servlet:
+    context-path: /notification
+
+spring:
+  profiles:
+    active: dev
+  output:
+    ansi:
+      enabled: always
+  application:
+    name: ead-notification
+  #Datasource
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/ead-notification?currentSchema=sc_notification_command&autoreconnect=true"
+    username: edersonjseder
+    password: Postgres1756
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      jdbc:
+        lob:
+          non-contextual-creation: true
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+
+logging:
+  level:
+    com.ead: TRACE
+    root: info
+    org.springframework.web: debug
+    org.hibernate: info
+
+#Actuator
+management:
+  server:
+    port: 9051
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - info
+          - refresh
+  endpoint:
+    info:
+      enabled: true
+    health:
+      enabled: true
+    loggers:
+      enabled: true
