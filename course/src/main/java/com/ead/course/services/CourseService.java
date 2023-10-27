@@ -1,15 +1,15 @@
 package com.ead.course.services;
 
 import com.ead.course.dtos.CourseDto;
+import com.ead.course.dtos.NotificationCommandDto;
 import com.ead.course.dtos.SubscriptionDto;
 import com.ead.course.enums.CourseLevel;
 import com.ead.course.enums.CourseStatus;
 import com.ead.course.enums.UserStatus;
-import com.ead.course.exceptions.CourseException;
-import com.ead.course.exceptions.CourseNotFoundException;
-import com.ead.course.exceptions.UserException;
-import com.ead.course.exceptions.UserNotFoundException;
+import com.ead.course.exceptions.*;
 import com.ead.course.models.Course;
+import com.ead.course.models.User;
+import com.ead.course.publishers.NotificationCommandPublisher;
 import com.ead.course.repositories.CourseRepository;
 import com.ead.course.repositories.LessonRepository;
 import com.ead.course.repositories.ModuleRepository;
@@ -33,6 +33,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.ead.course.constants.CourseMessagesConstants.*;
+import static com.ead.course.constants.PublisherConstants.PUBLISHER_ERROR_MENSAGEM;
 
 @Slf4j
 @Service
@@ -44,6 +45,7 @@ public class CourseService {
     private final CourseUtils courseUtils;
     private final CourseValidator courseValidator;
     private final UserRepository userRepository;
+    private final NotificationCommandPublisher notificationCommandPublisher;
 
     public Page<CourseDto> findAllCourses(Specification<Course> spec, Pageable pageable) {
         return courseUtils.toListCourseDto(courseRepository.findAll(spec, pageable));
@@ -93,6 +95,7 @@ public class CourseService {
         return courseUtils.toCourseDto(courseRepository.save(course));
     }
 
+    /*
     @Transactional
     public String saveSubscriptionUserInCourse(UUID courseId, SubscriptionDto subscriptionDto) {
         var course = getOneCourse(courseId);
@@ -112,6 +115,7 @@ public class CourseService {
 
         return COURSE_USER_MENSAGEM;
     }
+    */
 
     @Transactional
     public void removeCourse(UUID id) {
@@ -130,5 +134,34 @@ public class CourseService {
         }
         courseRepository.deleteCourseUserByCourse(course.getId());
         courseRepository.deleteById(id);
+    }
+
+    @Transactional
+    public String saveSubscriptionUserInCourseAndSendNotification(UUID courseId, SubscriptionDto subscriptionDto) {
+        var course = getOneCourse(courseId);
+
+        if (courseRepository.existsByCourseAndUser(courseId, subscriptionDto.getUserId())) {
+            throw new CourseException(COURSE_USUARIO_CADASTRADO_MENSAGEM + course.getName());
+        }
+
+        var user = userRepository.findById(subscriptionDto.getUserId())
+                .orElseThrow(() -> new UserNotFoundException(USER_COURSE_NOT_FOUND_MENSAGEM + subscriptionDto.getUserId()));
+
+        if (user.getUserStatus().equals(UserStatus.BLOCKED.name())) {
+            throw new UserException(USER_COURSE_BLOCKED_MENSAGEM);
+        }
+
+        courseRepository.saveCourseUser(course.getId(), user.getId());
+
+        try {
+            notificationCommandPublisher.publishNotificationCommand(NotificationCommandDto.builder()
+                    .title("Bem vindo(a) ao curso: " +course.getName())
+                    .message(user.getFullName() + " a sua inscricao foi relizada com sucesso!")
+                    .userId(user.getId())
+                    .build());
+        } catch(NotificationCommandException ex) {
+            throw new NotificationCommandException(PUBLISHER_ERROR_MENSAGEM);
+        }
+        return COURSE_USER_MENSAGEM;
     }
 }

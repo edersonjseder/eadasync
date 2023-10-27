@@ -1,4 +1,4 @@
-package com.ead.notification.dtos;
+package com.ead.course.dtos;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
