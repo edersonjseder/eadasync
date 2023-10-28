@@ -16,6 +16,11 @@ spring:
           uri: lb://ead-course
           predicates:
             - Path=/courses/**
+
+        - id: notification-service
+          uri: lb://ead-notification
+          predicates:
+            - Path=/notifications/**
       # Configuration to enable this gateway to allow React/Angular servers to access it without block them
       discovery:
         locator:
