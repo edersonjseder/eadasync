@@ -1,8 +1,8 @@
-package com.ead.serviceregistry.utils;
+package com.ead.configserver.utils;
 
-import com.ead.serviceregistry.enums.Roles;
-import com.ead.serviceregistry.persistence.UserModel;
-import com.ead.serviceregistry.services.UserService;
+import com.ead.configserver.enums.Roles;
+import com.ead.configserver.models.UserModel;
+import com.ead.configserver.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,11 +11,11 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class UserUtils {
-    @Value("${ead.service-registry.username}")
+    @Value("${ead.config-server.username}")
     private String username;
-    @Value("${ead.service-registry.password}")
+    @Value("${ead.config-server.password}")
     private String password;
-    @Value("${ead.service-registry.authority}")
+    @Value("${ead.config-server.authority}")
     private String authority;
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;

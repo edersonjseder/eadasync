@@ -1,6 +1,6 @@
-package com.ead.serviceregistry.configs;
+package com.ead.configserver.configs;
 
-import com.ead.serviceregistry.services.UserService;
+import com.ead.configserver.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

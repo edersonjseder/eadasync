@@ -1,16 +1,13 @@
-package com.ead.serviceregistry.service;
+package com.ead.serviceregistry.services;
 
 import com.ead.serviceregistry.persistence.UserModel;
 import com.ead.serviceregistry.repositories.UserRepository;
-import com.ead.serviceregistry.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

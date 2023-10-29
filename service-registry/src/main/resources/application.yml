@@ -19,7 +19,6 @@ spring:
     hibernate:
       ddl-auto: update
 
-
 ead:
   service-registry:
     username: serviceregistry
