@@ -4,9 +4,32 @@ server:
 spring:
   application:
     name: ead-service-registry
+  h2:
+    console:
+      enabled: true
+      path: /h2-ui
+  datasource:
+    url: jdbc:h2:file:./testdb
+    username: sa
+    password: password
+    driverClassName: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+
+ead:
+  service-registry:
+    username: serviceregistry
+    password: 'ead123sr'
+    authority: 'ADMIN'
 
 #This config won't be in production
 eureka:
   client:
     register-with-eureka: false #This line prevents eureka to auto register
     fetch-registry: false #It won't fetch its own registration in eureka
+    service-url:
+      default-zone: 'http://${ead.service-registry.username}:${ead.service-registry.password}@localhost:8761/eureka'
