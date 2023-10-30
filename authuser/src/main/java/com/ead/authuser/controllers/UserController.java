@@ -61,11 +61,6 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.saveUser(userDto, ActionType.UPDATE));
     }
 
-    @PutMapping(value = "/password")
-    public ResponseEntity<PasswordResponse> updatePassword(@RequestBody @Validated(UserDto.UserView.PasswordPut.class) @JsonView(UserDto.UserView.PasswordPut.class) UserDto userDto) {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.updatePassword(userDto));
-    }
-
     @PutMapping(value = "/image")
     public ResponseEntity<ImageResponse> updateImage(@RequestBody @Validated(UserDto.UserView.ImagePut.class) @JsonView(UserDto.UserView.ImagePut.class) UserDto userDto) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.updateImage(userDto, ActionType.UPDATE));

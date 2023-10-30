@@ -1,9 +1,7 @@
 package com.ead.authuser.exceptionhandler;
 
 
-import com.ead.authuser.exceptions.CourseServiceNotAvailableException;
-import com.ead.authuser.exceptions.UserException;
-import com.ead.authuser.exceptions.UserNotFoundException;
+import com.ead.authuser.exceptions.*;
 import com.ead.authuser.responses.ErrorResponse;
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -94,6 +92,18 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(UserNotFoundException.class)
     protected ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException ex) {
         ErrorResponse errorResponse = new ErrorResponse(NOT_FOUND, ex.getMessage());
+        return buildResponseEntity(errorResponse);
+    }
+
+    @ExceptionHandler(PasswordsNotMatchException.class)
+    protected ResponseEntity<ErrorResponse> handlePasswordsNotMatchException(PasswordsNotMatchException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(BAD_REQUEST, ex.getMessage());
+        return buildResponseEntity(errorResponse);
+    }
+
+    @ExceptionHandler(PasswordException.class)
+    protected ResponseEntity<ErrorResponse> handlePasswordException(PasswordException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(BAD_REQUEST, ex.getMessage());
         return buildResponseEntity(errorResponse);
     }
 

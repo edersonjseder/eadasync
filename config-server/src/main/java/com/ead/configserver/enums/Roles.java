@@ -1,5 +1,5 @@
 package com.ead.configserver.enums;
 
 public enum Roles {
-    BASIC, ADMIN
+    ROLE_BASIC, ROLE_ADMIN
 }

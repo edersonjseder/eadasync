@@ -5,29 +5,38 @@ import com.ead.authuser.clients.params.CourseClientParams;
 import com.ead.authuser.dtos.CourseDto;
 import com.ead.authuser.dtos.InstructorDto;
 import com.ead.authuser.dtos.UserDto;
+import com.ead.authuser.encoder.PasswordEncoder;
 import com.ead.authuser.enums.ActionType;
+import com.ead.authuser.enums.Roles;
 import com.ead.authuser.enums.UserStatus;
 import com.ead.authuser.enums.UserType;
+import com.ead.authuser.exceptions.RoleNotFoundException;
 import com.ead.authuser.exceptions.UserException;
 import com.ead.authuser.exceptions.UserNotFoundException;
+import com.ead.authuser.models.Role;
 import com.ead.authuser.models.User;
 import com.ead.authuser.publishers.UserEventPublisher;
+import com.ead.authuser.repositories.RoleRepository;
 import com.ead.authuser.repositories.UserRepository;
 import com.ead.authuser.responses.ImageResponse;
-import com.ead.authuser.responses.PasswordResponse;
 import com.ead.authuser.utils.UserUtils;
 import com.ead.authuser.utils.ValidaCPF;
+import com.google.common.collect.ImmutableSet;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.UUID;
 
 import static com.ead.authuser.constants.UserMessagesConstants.*;
@@ -35,11 +44,13 @@ import static com.ead.authuser.constants.UserMessagesConstants.*;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final UserUtils userUtils;
     private final UserEventPublisher userEventPublisher;
     private final CourseClientFeign courseClientFeign;
+    private final PasswordEncoder passwordEncoder;
 
     public Page<UserDto> findAllUsers(Specification<User> spec, Pageable pageable) {
         return userUtils.toListUserDto(userRepository.findAll(spec, pageable));
@@ -65,6 +76,8 @@ public class UserService {
         if (user.getUserStatus().equals(UserStatus.BLOCKED)) {
             throw new UserException(USUARIO_BLOQUEADO_MENSAGEM);
         }
+
+        user.getRoles().add(verifyRole(Roles.ROLE_INSTRUCTOR));
         user.setUserType(UserType.INSTRUCTOR);
         user.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
         userEventPublisher.publishUserEvent(userUtils.toUserEventDto(user), type);
@@ -89,12 +102,17 @@ public class UserService {
                 throw new UserException(USUARIO_EMAIL_EXISTENTE_MENSAGEM + userDto.getEmail());
             }
 
+            var roles = ImmutableSet.copyOf(List.of(verifyRole(Roles.ROLE_STUDENT)));
+
+            userDto.setPassword(passwordEncoder.hashPassword(userDto.getPassword()));
+
             user = new User();
 
             BeanUtils.copyProperties(userDto, user);
 
             user.setUserStatus(UserStatus.ACTIVE);
             user.setUserType(UserType.STUDENT);
+            user.setRoles(roles);
             user.setCreationDate(LocalDateTime.now(ZoneId.of("UTC")));
             user.setCurrentPasswordDate(LocalDateTime.now(ZoneId.of("UTC")));
             log.debug("Method saveUser user created {} ", user.toString());
@@ -121,21 +139,6 @@ public class UserService {
     }
 
     @Transactional
-    public PasswordResponse updatePassword(UserDto userDto) {
-        var user = userRepository.findById(userDto.getId()).orElseThrow(() -> new UserNotFoundException(userDto.getId()));
-
-        if (!user.getPassword().equals(userDto.getOldPassword())) {
-            throw new UserException(USUARIO_SENHA_MENSAGEM);
-        }
-
-        user.setPassword(user.getPassword());
-        user.setCurrentPasswordDate(LocalDateTime.now(ZoneId.of("UTC")));
-        user.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
-
-        return userUtils.toPasswordResponse(user);
-    }
-
-    @Transactional
     public ImageResponse updateImage(UserDto userDto, ActionType type) {
         var user = userRepository.findById(userDto.getId()).orElseThrow(() -> new UserNotFoundException(userDto.getId()));
 
@@ -151,5 +154,16 @@ public class UserService {
         var user = findUserById(id);
         userRepository.delete(user);
         userEventPublisher.publishUserEvent(userUtils.toUserEventDto(user), ActionType.DELETE);
+    }
+
+    @Transactional
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        var user = userRepository.findUserByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User could not be found"));
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), user.getAuthorities());
+    }
+
+    private Role verifyRole(Roles name) {
+        return roleRepository.findByRoleName(name).orElseThrow(RoleNotFoundException::new);
     }
 }

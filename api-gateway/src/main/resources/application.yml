@@ -21,6 +21,11 @@ spring:
           uri: lb://ead-notification
           predicates:
             - Path=/notifications/**
+
+        - id: email-service
+          uri: lb://ead-email-service
+          predicates:
+            - Path=/email_service/**
       # Configuration to enable this gateway to allow React/Angular servers to access it without block them
       discovery:
         locator:
@@ -41,7 +46,7 @@ ead:
   service-registry:
     username: serviceregistry
     password: 'ead123sr'
-    authority: 'ADMIN'
+    authority: 'ROLE_ADMIN'
 
 eureka:
   client:

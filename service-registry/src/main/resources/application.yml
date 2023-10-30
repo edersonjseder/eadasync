@@ -23,7 +23,7 @@ ead:
   service-registry:
     username: serviceregistry
     password: 'ead123sr'
-    authority: 'ADMIN'
+    authority: 'ROLE_ADMIN'
 
 #This config won't be in production
 eureka:

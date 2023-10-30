@@ -1,5 +1,6 @@
 package com.ead.authuser.utils;
 
+import com.ead.authuser.dtos.PasswordEventDto;
 import com.ead.authuser.dtos.UserDto;
 import com.ead.authuser.dtos.UserEventDto;
 import com.ead.authuser.models.User;
@@ -76,5 +77,14 @@ public class UserUtils {
         userEventDto.setUserStatus(user.getUserStatus().name());
         userEventDto.setUserType(user.getUserType().name());
         return userEventDto;
+    }
+
+    public PasswordEventDto toPasswordEventDto(User user) {
+        return PasswordEventDto.builder()
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .fullName(user.getFullName())
+                .message(USUARIO_SENHA_SUCESSO_MENSAGEM)
+                .build();
     }
 }

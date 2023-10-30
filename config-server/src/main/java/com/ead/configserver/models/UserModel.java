@@ -38,7 +38,7 @@ public class UserModel implements Serializable, UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<GrantedAuthority> authorities = new HashSet<>();
-        authorities.add(new Authority(Roles.ADMIN.name()));
+        authorities.add(new Authority(Roles.ROLE_ADMIN.name()));
         return authorities;
     }
 

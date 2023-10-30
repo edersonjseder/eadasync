@@ -9,4 +9,4 @@ spring:
         service-id: ead-config-server
       username: configserver
       password: 'ead123cs'
-      authority: 'ADMIN'
+      authority: 'ROLE_ADMIN'

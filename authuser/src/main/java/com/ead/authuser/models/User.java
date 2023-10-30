@@ -1,5 +1,6 @@
 package com.ead.authuser.models;
 
+import com.ead.authuser.enums.Roles;
 import com.ead.authuser.enums.UserStatus;
 import com.ead.authuser.enums.UserType;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -8,12 +9,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Getter
@@ -23,7 +25,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Table(name = "TB_USERS")
-public class User implements Serializable {
+public class User implements Serializable, UserDetails {
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -60,6 +62,16 @@ public class User implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private LocalDateTime currentPasswordDate;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "TB_USERS_ROLES",
+            uniqueConstraints = @UniqueConstraint(columnNames = {"user_id","role_id"}, name = "unique_role_user"),
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id", table = "TB_USERS",
+                    foreignKey = @ForeignKey(name = "user_id_fk", value = ConstraintMode.CONSTRAINT)),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id", table = "TB_ROLES",
+                    foreignKey = @ForeignKey(name = "role_id_fk", value = ConstraintMode.CONSTRAINT)))
+    private Set<Role> roles;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -77,5 +89,32 @@ public class User implements Serializable {
         int result = 1;
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         return result;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Set<GrantedAuthority> authorities = new HashSet<>();
+        authorities.add(Role.builder().roleName(Roles.ROLE_ADMIN).build());
+        return authorities;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }
