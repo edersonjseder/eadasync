@@ -4,9 +4,11 @@ import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class ResetPasswordDto {
     @NotBlank(message = "E-mail is required")
     @Email(message = "Insert valid e-mail")

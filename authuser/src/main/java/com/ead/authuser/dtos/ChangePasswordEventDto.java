@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PasswordEventDto {
+public class ChangePasswordEventDto {
     private String username;
     private String email;
     private String fullName;

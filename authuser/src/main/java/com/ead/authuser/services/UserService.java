@@ -19,6 +19,7 @@ import com.ead.authuser.publishers.UserEventPublisher;
 import com.ead.authuser.repositories.RoleRepository;
 import com.ead.authuser.repositories.UserRepository;
 import com.ead.authuser.responses.ImageResponse;
+import com.ead.authuser.security.UserDetailsImpl;
 import com.ead.authuser.utils.UserUtils;
 import com.ead.authuser.utils.ValidaCPF;
 import com.google.common.collect.ImmutableSet;
@@ -160,7 +161,7 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         var user = userRepository.findUserByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User could not be found"));
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), user.getAuthorities());
+        return UserDetailsImpl.build(user);
     }
 
     private Role verifyRole(Roles name) {

@@ -1,11 +1,9 @@
 package com.ead.authuser.utils;
 
-import com.ead.authuser.dtos.PasswordEventDto;
 import com.ead.authuser.dtos.UserDto;
 import com.ead.authuser.dtos.UserEventDto;
 import com.ead.authuser.models.User;
 import com.ead.authuser.responses.ImageResponse;
-import com.ead.authuser.responses.PasswordResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.BeanUtils;
@@ -13,7 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import static com.ead.authuser.constants.UserMessagesConstants.USUARIO_IMAGE_SUCESSO_MENSAGEM;
-import static com.ead.authuser.constants.UserMessagesConstants.USUARIO_SENHA_SUCESSO_MENSAGEM;
 
 @Log4j2
 @Component
@@ -35,14 +32,6 @@ public class UserUtils {
                 .creationDate(dateUtils.parseDate(user.getCreationDate()))
                 .lastUpdateDate(dateUtils.parseDate(user.getLastUpdateDate()))
                 .currentPasswordDate(dateUtils.parseDate(user.getCurrentPasswordDate()))
-                .build();
-    }
-
-    public PasswordResponse toPasswordResponse(User user) {
-        return PasswordResponse.builder()
-                .message(USUARIO_SENHA_SUCESSO_MENSAGEM)
-                .currentPasswordDate(dateUtils.parseDate(user.getCurrentPasswordDate()))
-                .lastUpdatedDate(dateUtils.parseDate(user.getLastUpdateDate()))
                 .build();
     }
 
@@ -77,14 +66,5 @@ public class UserUtils {
         userEventDto.setUserStatus(user.getUserStatus().name());
         userEventDto.setUserType(user.getUserType().name());
         return userEventDto;
-    }
-
-    public PasswordEventDto toPasswordEventDto(User user) {
-        return PasswordEventDto.builder()
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .fullName(user.getFullName())
-                .message(USUARIO_SENHA_SUCESSO_MENSAGEM)
-                .build();
     }
 }

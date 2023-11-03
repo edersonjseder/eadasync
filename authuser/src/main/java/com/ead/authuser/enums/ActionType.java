@@ -4,5 +4,6 @@ public enum ActionType {
     CREATE,
     UPDATE,
     DELETE,
+    FORGOT,
     SEND
 }

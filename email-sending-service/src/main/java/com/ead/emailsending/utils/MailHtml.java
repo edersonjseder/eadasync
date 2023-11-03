@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class MailHtml {
-    public String formatEmail(String nome, String username, String password) {
+    public String formatEmail(String resetPassword, String name) {
 
         StringBuilder builder = new StringBuilder();
         builder.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">").append("\n")
@@ -18,15 +18,15 @@ public class MailHtml {
                 ///**          BEGIN EMAIL        **///
                 .append("          <tr>").append("\n")
                 .append("            <td align=\"center\" bgcolor=\"#ffffff\" style=\"padding:30px\">").append("\n")
-                .append("               <p style=\"text-align:left\">Olá, ").append("<b>").append(nome).append("</b>").append("<br><br> Segue abaixo seus dados de acesso para a Loja Virtual:").append("\n")
+                .append("               <p style=\"text-align:left\">Hello, ").append("<b>").append(name).append("</b>").append("<br><br> We received a request to reset the password for your account for this email address. To initiate the password reset process for your account, click the link below.").append("\n")
                 .append("              </p>").append("\n")
-                .append("              <p style=\"text-align:left\">").append("\n")
-                .append("                <strong>Username: </strong>").append(username).append("\n").append("</p>").append("\n")
-                .append("              <p style=\"text-align:left\"><strong>Senha padrão: </strong>").append(password)
+                .append("              <p>").append("\n")
+                .append("                <a target=\"_blank\" style=\"text-decoration:none; background-color: black; border: black 1px solid; color: #fff; padding:10px 10px; display:block;\" href=\"").append(resetPassword).append("\">").append("\n")
+                .append("                  <strong>Reset Password</strong></a>").append("\n")
                 .append("              </p>").append("\n")
-                .append("              <p style=\"text-align:left\">Por favor não esqueça de trocar a sua senha e aproveite os melhores preços em nossa loja.</p>").append("\n")
+                .append("              <p style=\"text-align:left\">This link is valid for 2 hours only.<br><br>If you did not make this request, you can simply ignore this email.</p>").append("\n")
                 .append("              <p style=\"text-align:left\">").append("\n")
-                .append("              Obrigado,<br>Equipe Loja Virtual").append("\n")
+                .append("              Sincerely,<br>The Pinvent Team").append("\n")
                 .append("              </p>").append("\n")
                 .append("            </td>").append("\n")
                 .append("          </tr>").append("\n")

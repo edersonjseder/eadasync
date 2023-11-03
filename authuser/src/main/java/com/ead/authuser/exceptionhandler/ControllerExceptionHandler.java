@@ -95,6 +95,12 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(errorResponse);
     }
 
+    @ExceptionHandler(TokenNotFoundException.class)
+    protected ResponseEntity<ErrorResponse> handleTokenNotFoundException(TokenNotFoundException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(NOT_FOUND, ex.getMessage());
+        return buildResponseEntity(errorResponse);
+    }
+
     @ExceptionHandler(PasswordsNotMatchException.class)
     protected ResponseEntity<ErrorResponse> handlePasswordsNotMatchException(PasswordsNotMatchException ex) {
         ErrorResponse errorResponse = new ErrorResponse(BAD_REQUEST, ex.getMessage());

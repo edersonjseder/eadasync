@@ -1,6 +1,7 @@
 package com.ead.emailsending.consumers;
 
-import com.ead.emailsending.dtos.PasswordEventDto;
+import com.ead.emailsending.dtos.ChangePasswordEventDto;
+import com.ead.emailsending.dtos.ForgotPasswordEventDto;
 import com.ead.emailsending.service.SendEmailService;
 import com.ead.emailsending.utils.EmailUtils;
 import jakarta.mail.MessagingException;
@@ -22,12 +23,23 @@ public class UserConsumer {
     private final EmailUtils emailUtils;
 
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(value = "${ead.broker.queue.userEventQueue.name}", durable = "true"),
-            exchange = @Exchange(value = "${ead.broker.exchange.userEventExchange}", type = ExchangeTypes.FANOUT, ignoreDeclarationExceptions = "true"))
+            value = @Queue(value = "${ead.broker.queue.changePasswordEventQueue.name}", durable = "true"),
+            exchange = @Exchange(value = "${ead.broker.exchange.changePasswordEventExchange}", type = ExchangeTypes.FANOUT, ignoreDeclarationExceptions = "true"))
     )
-    public void listenUserEvent(@Payload PasswordEventDto passwordEventDto) {
+    public void listenUserChangePasswordEvent(@Payload ChangePasswordEventDto changePasswordEventDto) {
         try {
-            sendEmailService.sendEmail(emailUtils.formatEmail(passwordEventDto));
+            sendEmailService.sendEmail(emailUtils.formatEmail(changePasswordEventDto));
+        } catch (MessagingException | UnsupportedEncodingException e) {
+            e.getStackTrace();
+        }
+    }
+    @RabbitListener(bindings = @QueueBinding(
+            value = @Queue(value = "${ead.broker.queue.forgotPasswordEventQueue.name}", durable = "true"),
+            exchange = @Exchange(value = "${ead.broker.exchange.forgotPasswordEventExchange}", type = ExchangeTypes.FANOUT, ignoreDeclarationExceptions = "true"))
+    )
+    public void listenUserForgotPasswordEvent(@Payload ForgotPasswordEventDto forgotPasswordEventDto) {
+        try {
+            sendEmailService.sendEmail(emailUtils.formatForgotPasswordEmail(forgotPasswordEventDto));
         } catch (MessagingException | UnsupportedEncodingException e) {
             e.getStackTrace();
         }

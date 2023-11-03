@@ -5,10 +5,10 @@ import com.ead.authuser.enums.ActionType;
 import com.ead.authuser.exceptions.PasswordException;
 import com.ead.authuser.exceptions.PasswordsNotMatchException;
 import com.ead.authuser.exceptions.UserNotFoundException;
-import com.ead.authuser.publishers.PasswordEventPublisher;
+import com.ead.authuser.publishers.ChangePasswordEventPublisher;
 import com.ead.authuser.repositories.UserRepository;
 import com.ead.authuser.responses.PasswordResponse;
-import com.ead.authuser.utils.UserUtils;
+import com.ead.authuser.utils.PasswordUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,10 +20,10 @@ import java.time.ZoneId;
 @Service
 @RequiredArgsConstructor
 public class ChangeUserPasswordService {
-    private final UserUtils userUtils;
+    private final PasswordUtils passwordUtils;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-    private final PasswordEventPublisher passwordEventPublisher;
+    private final ChangePasswordEventPublisher changePasswordEventPublisher;
 
     @Transactional
     public PasswordResponse updateUserPassword(ResetPasswordDto resetPasswordDto) {
@@ -43,8 +43,8 @@ public class ChangeUserPasswordService {
         user.setCurrentPasswordDate(LocalDateTime.now(ZoneId.of("UTC")));
         user.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
 
-        passwordEventPublisher.publishPasswordEvent(userUtils.toPasswordEventDto(user), ActionType.SEND);
+        changePasswordEventPublisher.publishChangePasswordEvent(passwordUtils.toChangePasswordEventDto(user), ActionType.SEND);
 
-        return userUtils.toPasswordResponse(user);
+        return passwordUtils.toPasswordResponse(user);
     }
 }

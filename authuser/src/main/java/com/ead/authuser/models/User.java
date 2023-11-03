@@ -1,6 +1,5 @@
 package com.ead.authuser.models;
 
-import com.ead.authuser.enums.Roles;
 import com.ead.authuser.enums.UserStatus;
 import com.ead.authuser.enums.UserType;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -9,13 +8,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -25,7 +23,7 @@ import java.util.*;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Table(name = "TB_USERS")
-public class User implements Serializable, UserDetails {
+public class User implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -89,32 +87,5 @@ public class User implements Serializable, UserDetails {
         int result = 1;
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         return result;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        Set<GrantedAuthority> authorities = new HashSet<>();
-        authorities.add(Role.builder().roleName(Roles.ROLE_ADMIN).build());
-        return authorities;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
     }
 }
