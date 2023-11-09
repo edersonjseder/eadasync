@@ -1,6 +1,5 @@
 package com.ead.authuser.security;
 
-import com.ead.authuser.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +17,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig {
-    private final UserService userService;
+    private final UserDetailServiceImpl userService;
+    private final RestAccessDeniedHandler restAccessDeniedHandler;
+    private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
     public static final String[] ENDPOINTS_WHITELIST = {
             "/auth/**",
             "/password/**"
@@ -28,8 +29,11 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
+                .exceptionHandling((exception) -> exception.authenticationEntryPoint(restAuthenticationEntryPoint)
+                                                           .accessDeniedHandler(restAccessDeniedHandler))
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(ENDPOINTS_WHITELIST).permitAll()
+                        .requestMatchers("/users/**").hasRole("STUDENT")
                         .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider())
                 .httpBasic(Customizer.withDefaults()).formLogin(Customizer.withDefaults());

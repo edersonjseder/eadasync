@@ -5,7 +5,6 @@ import com.ead.authuser.clients.params.CourseClientParams;
 import com.ead.authuser.dtos.CourseDto;
 import com.ead.authuser.dtos.InstructorDto;
 import com.ead.authuser.dtos.UserDto;
-import com.ead.authuser.encoder.PasswordEncoder;
 import com.ead.authuser.enums.ActionType;
 import com.ead.authuser.enums.Roles;
 import com.ead.authuser.enums.UserStatus;
@@ -19,7 +18,6 @@ import com.ead.authuser.publishers.UserEventPublisher;
 import com.ead.authuser.repositories.RoleRepository;
 import com.ead.authuser.repositories.UserRepository;
 import com.ead.authuser.responses.ImageResponse;
-import com.ead.authuser.security.UserDetailsImpl;
 import com.ead.authuser.utils.UserUtils;
 import com.ead.authuser.utils.ValidaCPF;
 import com.google.common.collect.ImmutableSet;
@@ -29,9 +27,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,7 +41,7 @@ import static com.ead.authuser.constants.UserMessagesConstants.*;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserService implements UserDetailsService {
+public class UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final UserUtils userUtils;
@@ -105,7 +101,7 @@ public class UserService implements UserDetailsService {
 
             var roles = ImmutableSet.copyOf(List.of(verifyRole(Roles.ROLE_STUDENT)));
 
-            userDto.setPassword(passwordEncoder.hashPassword(userDto.getPassword()));
+            userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
             user = new User();
 
@@ -155,13 +151,6 @@ public class UserService implements UserDetailsService {
         var user = findUserById(id);
         userRepository.delete(user);
         userEventPublisher.publishUserEvent(userUtils.toUserEventDto(user), ActionType.DELETE);
-    }
-
-    @Transactional
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        var user = userRepository.findUserByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User could not be found"));
-        return UserDetailsImpl.build(user);
     }
 
     private Role verifyRole(Roles name) {

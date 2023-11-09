@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
 
@@ -32,6 +33,7 @@ public class ErrorResponse {
         this.statusCode = status.value();
         this.status = status;
         this.message = message;
+        this.timestamp = LocalDateTime.now();
     }
 
     public ErrorResponse(HttpStatus httpStatus, String message, String error) {

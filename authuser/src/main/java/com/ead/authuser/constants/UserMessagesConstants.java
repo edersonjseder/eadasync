@@ -9,7 +9,7 @@ public class UserMessagesConstants {
     public static final String USUARIO_EXISTENTE_MENSAGEM = "Esse usuário já está cadastrado";
     public static final String USUARIO_BLOQUEADO_MENSAGEM = "Esse usuário está bloqueado";
     public static final String USUARIO_SENHA_MENSAGEM = "As senhas não são compatíveis";
-    public static final String USUARIO_SENHA_INVALIDA_MENSAGEM = "Senhas inválida.";
+    public static final String USUARIO_SENHA_INVALIDA_MENSAGEM = "Senha inválida.";
     public static final String USUARIO_SENHA_SUCESSO_MENSAGEM = "Senha alterada com sucesso.";
     public static final String USUARIO_IMAGE_SUCESSO_MENSAGEM = "Imagem alterada com sucesso.";
     public static final String USUARIO_REMOVIDO_SUCESSO_MENSAGEM = "Usuário removido com sucesso.";
