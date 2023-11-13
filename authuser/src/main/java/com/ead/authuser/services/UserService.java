@@ -2,9 +2,7 @@ package com.ead.authuser.services;
 
 import com.ead.authuser.clients.CourseClientFeign;
 import com.ead.authuser.clients.params.CourseClientParams;
-import com.ead.authuser.dtos.CourseDto;
-import com.ead.authuser.dtos.InstructorDto;
-import com.ead.authuser.dtos.UserDto;
+import com.ead.authuser.dtos.*;
 import com.ead.authuser.enums.ActionType;
 import com.ead.authuser.enums.Roles;
 import com.ead.authuser.enums.UserStatus;
@@ -18,6 +16,8 @@ import com.ead.authuser.publishers.UserEventPublisher;
 import com.ead.authuser.repositories.RoleRepository;
 import com.ead.authuser.repositories.UserRepository;
 import com.ead.authuser.responses.ImageResponse;
+import com.ead.authuser.responses.TokenResponse;
+import com.ead.authuser.security.JwtProvider;
 import com.ead.authuser.utils.UserUtils;
 import com.ead.authuser.utils.ValidaCPF;
 import com.google.common.collect.ImmutableSet;
@@ -27,6 +27,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,6 +52,8 @@ public class UserService {
     private final UserEventPublisher userEventPublisher;
     private final CourseClientFeign courseClientFeign;
     private final PasswordEncoder passwordEncoder;
+    private final JwtProvider jwtProvider;
+    private final AuthenticationManager authenticationManager;
 
     public Page<UserDto> findAllUsers(Specification<User> spec, Pageable pageable) {
         return userUtils.toListUserDto(userRepository.findAll(spec, pageable));
@@ -65,6 +71,17 @@ public class UserService {
                 .size(pageable.getPageSize())
                 .sort(pageable.getSort().toString().replaceAll(": ", ","))
                 .build());
+    }
+
+    public TokenResponse signIn(SignInDto request) throws BadCredentialsException {
+        var authentication = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        var jwt = jwtProvider.generateToken(authentication);
+
+        return TokenResponse.builder().authorization(jwt).build();
     }
 
     @Transactional

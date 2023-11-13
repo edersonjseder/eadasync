@@ -23,4 +23,6 @@ public interface UserRepository extends JpaRepository<User, UUID>, JpaSpecificat
     // so for this query we use this annotation to specifically get the roles in fetch mode
     @EntityGraph(attributePaths = "roles", type = EntityGraph.EntityGraphType.FETCH)
     Optional<User> findUserByUsername(String username);
+    @EntityGraph(attributePaths = "roles", type = EntityGraph.EntityGraphType.FETCH)
+    Optional<User> findUserById(UUID id);
 }

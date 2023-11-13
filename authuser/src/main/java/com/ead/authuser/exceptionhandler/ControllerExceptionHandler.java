@@ -12,6 +12,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -65,11 +68,23 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntityReturnsObject(errorResponse);
     }
 
-//    @ExceptionHandler(BadCredentialsException.class)
-//    protected ResponseEntity<ErrorResponse> handleBadCredentialsException(BadCredentialsException e) {
-//        ErrorResponse errorResponse = new ErrorResponse(UNAUTHORIZED, "Usuario ou senha invalidos", e.getMessage());
-//        return buildResponseEntity(errorResponse);
-//    }
+    @ExceptionHandler(BadCredentialsException.class)
+    protected ResponseEntity<ErrorResponse> handleBadCredentialsException(BadCredentialsException e) {
+        ErrorResponse errorResponse = new ErrorResponse(UNAUTHORIZED, "Invalid User or password", e.getMessage());
+        return buildResponseEntity(errorResponse);
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    protected ResponseEntity<ErrorResponse> handleUsernameNotFoundException(UsernameNotFoundException e) {
+        ErrorResponse errorResponse = new ErrorResponse(UNAUTHORIZED, "Invalid", e.getMessage());
+        return buildResponseEntity(errorResponse);
+    }
+
+    @ExceptionHandler(AuthenticationCredentialsNotFoundException.class)
+    protected ResponseEntity<ErrorResponse> handleAuthenticationCredentialsNotFoundException(AuthenticationCredentialsNotFoundException e) {
+        ErrorResponse errorResponse = new ErrorResponse(UNAUTHORIZED, "Invalid", e.getMessage());
+        return buildResponseEntity(errorResponse);
+    }
 
     @ExceptionHandler(CourseServiceNotAvailableException.class)
     public ResponseEntity<ErrorResponse> handleCourseServiceNotAvailableException(CourseServiceNotAvailableException e) {
