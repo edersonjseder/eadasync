@@ -12,6 +12,7 @@ import lombok.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -61,14 +62,24 @@ public class User implements Serializable {
     private LocalDateTime currentPasswordDate;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @OneToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "TB_USERS_ROLES",
-            uniqueConstraints = @UniqueConstraint(columnNames = {"user_id","role_id"}, name = "unique_role_user"),
+            uniqueConstraints = @UniqueConstraint(columnNames = {"user_id"}, name = "unique_user_role"),
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id", table = "TB_USERS",
                     foreignKey = @ForeignKey(name = "user_id_fk", value = ConstraintMode.CONSTRAINT)),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id", table = "TB_ROLES",
                     foreignKey = @ForeignKey(name = "role_id_fk", value = ConstraintMode.CONSTRAINT)))
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
+
+    public void addRole(Role role) {
+        this.roles.add(role);
+        role.getUsers().add(this);
+    }
+
+    public void removeRole(Role role) {
+        this.roles.remove(role);
+        role.getUsers().remove(this);
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -14,7 +14,7 @@ import static com.ead.authuser.constants.UserMessagesConstants.COURSE_FEIGN_SERV
 @Slf4j
 public class CourseClientFactory implements CourseClientFeign {
     @Override
-    public Page<CourseDto> getAllCoursesByUser(CourseClientParams params) {
+    public Page<CourseDto> getAllCoursesByUser(CourseClientParams params, String header) {
         log.error("Inside circuitbreaker fallback, getAllCoursesByUser - {}", params.getUserId());
         callCourseClientFallback(params.getUserId());
         return null;

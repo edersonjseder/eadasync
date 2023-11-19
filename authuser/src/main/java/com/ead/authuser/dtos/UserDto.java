@@ -1,6 +1,7 @@
 package com.ead.authuser.dtos;
 
 import com.ead.authuser.validations.UsernameConstraint;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.validation.constraints.Email;
@@ -70,4 +71,7 @@ public class UserDto extends RepresentationModel<UserDto> {
     private String creationDate;
     private String lastUpdateDate;
     private String currentPasswordDate;
+
+    @JsonIgnore
+    private boolean isAuthorized;
 }

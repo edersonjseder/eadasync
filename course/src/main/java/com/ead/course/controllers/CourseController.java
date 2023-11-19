@@ -1,6 +1,8 @@
 package com.ead.course.controllers;
 
 import com.ead.course.dtos.CourseDto;
+import com.ead.course.enums.Roles;
+import com.ead.course.security.annotation.HasProperAuthority;
 import com.ead.course.services.CourseService;
 import com.ead.course.specifications.CourseSpec;
 import com.ead.course.specifications.SpecificationTemplate;
@@ -12,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +29,7 @@ public class CourseController {
     private final CourseService courseService;
     private final CourseUtils courseUtils;
 
+    @HasProperAuthority(authorities = {Roles.ROLE_INSTRUCTOR, Roles.ROLE_STUDENT})
     @GetMapping(value = "/all")
     public ResponseEntity<Page<CourseDto>> getAllCourses(@PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
                                                          CourseSpec spec, @RequestParam(required = false) UUID userId) {
@@ -49,21 +53,25 @@ public class CourseController {
         return ResponseEntity.ok(coursePage);
     }
 
+    @HasProperAuthority(authorities = {Roles.ROLE_INSTRUCTOR, Roles.ROLE_STUDENT})
     @GetMapping("/{id}")
     public ResponseEntity<CourseDto> getCourseById(@PathVariable(value = "id") UUID id) {
         return ResponseEntity.ok(courseUtils.toCourseDto(courseService.getOneCourse(id)));
     }
 
+    @HasProperAuthority(authorities = {Roles.ROLE_INSTRUCTOR})
     @PostMapping(value = "/register")
     public ResponseEntity<CourseDto> registerCourse(@RequestBody CourseDto courseDto, Errors errors) {
         return ResponseEntity.status(HttpStatus.CREATED).body(courseService.saveCourse(courseDto, errors));
     }
 
+    @HasProperAuthority(authorities = {Roles.ROLE_INSTRUCTOR})
     @PutMapping(value = "/update")
     public ResponseEntity<CourseDto> updateCourse(@RequestBody CourseDto courseDto, Errors errors) {
         return ResponseEntity.ok(courseService.saveCourse(courseDto, errors));
     }
 
+    @HasProperAuthority(authorities = {Roles.ROLE_INSTRUCTOR})
     @DeleteMapping(value = "/remove/{id}")
     public ResponseEntity<String> removeCourse(@PathVariable("id") UUID id) {
         courseService.removeCourse(id);

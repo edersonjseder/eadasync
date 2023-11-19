@@ -4,6 +4,7 @@ import com.ead.authuser.models.User;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -25,4 +26,7 @@ public interface UserRepository extends JpaRepository<User, UUID>, JpaSpecificat
     Optional<User> findUserByUsername(String username);
     @EntityGraph(attributePaths = "roles", type = EntityGraph.EntityGraphType.FETCH)
     Optional<User> findUserById(UUID id);
+
+    @Query(value = "SELECT constraint_name from information_schema.constraint_column_usage where table_name = 'tb_users_roles' and column_name = 'role_id' and constraint_name <> 'unique_role_user'", nativeQuery = true)
+    String getConstraintAccess();
 }

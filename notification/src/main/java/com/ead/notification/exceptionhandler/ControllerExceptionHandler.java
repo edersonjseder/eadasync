@@ -10,6 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -68,6 +69,12 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
 //        ErrorResponse errorResponse = new ErrorResponse(UNAUTHORIZED, "Usuario ou senha invalidos", e.getMessage());
 //        return buildResponseEntity(errorResponse);
 //    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    protected ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException e) {
+        ErrorResponse errorResponse = new ErrorResponse(UNAUTHORIZED, "You don't have permission", e.getMessage());
+        return buildResponseEntity(errorResponse);
+    }
 
     @ExceptionHandler(NotificationNotFoundException.class)
     protected ResponseEntity<ErrorResponse> handleNotificationNotFoundException(NotificationNotFoundException ex) {

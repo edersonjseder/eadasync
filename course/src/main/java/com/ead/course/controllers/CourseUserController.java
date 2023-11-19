@@ -2,6 +2,8 @@ package com.ead.course.controllers;
 
 import com.ead.course.dtos.SubscriptionDto;
 import com.ead.course.dtos.UserDto;
+import com.ead.course.enums.Roles;
+import com.ead.course.security.annotation.HasProperAuthority;
 import com.ead.course.services.CourseService;
 import com.ead.course.services.UserService;
 import com.ead.course.specifications.SpecificationTemplate;
@@ -25,6 +27,7 @@ public class CourseUserController {
     private final UserService userService;
     private final CourseService courseService;
 
+    @HasProperAuthority(authorities = {Roles.ROLE_STUDENT})
     @GetMapping("/{id}/users")
     public ResponseEntity<Page<UserDto>> getAllUsersByCourse(UserSpec spec,
                                                              @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
